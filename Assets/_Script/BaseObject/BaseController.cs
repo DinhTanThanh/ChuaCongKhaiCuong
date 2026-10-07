@@ -1,16 +1,18 @@
 using UnityEngine;
 
-public class BaseController : MonoBehaviour
+public class BaseController : BaseLoadComponent
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] protected CharacterSO characterSO;
+    public CharacterSO CharacterSO => characterSO;
+    protected override void LoadComponent()
     {
-        
+        base.LoadComponent();
+        this.LoadCharacterSO();
     }
-
-    // Update is called once per frame
-    void Update()
+    protected virtual void LoadCharacterSO()
     {
-        
+        if (this.characterSO != null) return;
+        this.characterSO = Resources.Load<CharacterSO>(name+"SO");
+        Debug.LogWarning(name + " : LoadCharacterSO");
     }
 }

@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd6caced8e305fb4485591e1c989891e, type: 3}
   m_Name: WukongSO
   m_EditorClassIdentifier: 
-  speed: 0
-  turnSpeed: 0
-  jumpHeight: 0
+  speed: 2
+  turnSpeed: 180
+  jumpHeight: 3
