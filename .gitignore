@@ -107,3 +107,7 @@ InitTestScene*.unity*
 
 # Auto-generated cache in Assets folder
 /[Aa]ssets/[Ss]ceneDependencyCache*
+
+# Large asset packages (avoid GitHub file size limits)
+/[Aa]ssets/[Pp]acket/env/[Ff]antasy[Kk]ingdom/
+/[Aa]ssets/[Pp]acket/env/[Ff]antasy[Kk]ingdom.meta

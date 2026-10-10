@@ -68,11 +68,9 @@ public abstract class BaseMove : BaseLoadComponent
     {
         if (this.isGrounded && this.rb != null)
         {
-            // Vận tốc đầu cần đạt để lên độ cao jumpHeight: v = sqrt(-2 * g * h)
             float g = Mathf.Abs(Physics.gravity.y != 0 ? Physics.gravity.y : this.gravity);
             float jumpSpeed = Mathf.Sqrt(2f * g * this.jumpHeight);
 
-            // Đặt trực tiếp vận tốc hướng lên cho Rigidbody (tương thích cả Unity mới linearVelocity và velocity cũ)
             Vector3 currentVel = this.rb.linearVelocity;
             currentVel.y = jumpSpeed;
             this.rb.linearVelocity = currentVel;
