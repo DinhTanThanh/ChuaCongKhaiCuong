@@ -592,6 +592,7 @@ GameObject:
   - component: {fileID: 530699112}
   - component: {fileID: 530699113}
   - component: {fileID: 530699114}
+  - component: {fileID: 530699115}
   m_Layer: 0
   m_Name: Wukong
   m_TagString: Untagged
@@ -630,6 +631,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   characterSO: {fileID: 11400000, guid: 88f35478fbb4945419b9c59a491a9b48, type: 2}
+  currentWeapon: {fileID: 0}
+  weaponList:
+  - {fileID: 11400000, guid: 58e19572bbd141e4889c4be477ded651, type: 2}
+  - {fileID: 11400000, guid: 352d1f3e45f05d445aa092caa2efa6f5, type: 2}
+  dameSender: {fileID: 530699115}
+  enableKeyboardWeaponSwitch: 1
 --- !u!54 &530699113
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -680,6 +687,28 @@ CapsuleCollider:
   m_Height: 1.6523612
   m_Direction: 1
   m_Center: {x: -0.06391001, y: 0.8374609, z: 0}
+--- !u!114 &530699115
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 530699110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d708f0e01ba7bc4b99fb9f79f184f50, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  damage: 0
+  critRate: 0
+  critDamageMultiplier: 0
+  minDamage: 1
+  equippedWeaponSO: {fileID: 0}
+  col: {fileID: 530699114}
+  attacker: {fileID: 530699110}
+  preventDuplicateHit: 1
+  hitReceivers: []
+  controller: {fileID: 530699112}
 --- !u!1 &699948383
 GameObject:
   m_ObjectHideFlags: 0
@@ -689,6 +718,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 699948384}
+  - component: {fileID: 699948385}
   m_Layer: 0
   m_Name: DameReceiver
   m_TagString: Untagged
@@ -711,6 +741,25 @@ Transform:
   m_Children: []
   m_Father: {fileID: 530699111}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &699948385
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 699948383}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3aeb3a4ef7a0df447812d31842adbcd7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hp: 0
+  maxHp: 0
+  isDead: 0
+  isImmortal: 0
+  defense: 0
+  col: {fileID: 530699114}
+  controller: {fileID: 530699112}
 --- !u!1 &832575517
 GameObject:
   m_ObjectHideFlags: 0

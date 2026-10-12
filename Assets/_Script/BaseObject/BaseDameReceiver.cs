@@ -4,10 +4,13 @@ using UnityEngine;
 public abstract class BaseDameReceiver : BaseLoadComponent
 {
     [Header("Health Settings")]
-    [SerializeField] protected float hp = 100f;
-    [SerializeField] protected float maxHp = 100f;
+    [SerializeField] protected float hp;
+    [SerializeField] protected float maxHp;
     [SerializeField] protected bool isDead = false;
     [SerializeField] protected bool isImmortal = false; //bât tử
+
+    [Header("Defense Settings")]
+    [SerializeField] protected float defense = 0f;
 
     [Header("Components")]
     [SerializeField] protected Collider col;
@@ -19,6 +22,7 @@ public abstract class BaseDameReceiver : BaseLoadComponent
 
     public virtual float CurrentHp => this.hp;
     public virtual float MaxHp => this.maxHp;
+    public virtual float Defense => this.defense;
     public virtual bool IsDead => this.isDead;
     public virtual bool IsImmortal 
     { 
@@ -41,15 +45,16 @@ public abstract class BaseDameReceiver : BaseLoadComponent
     protected virtual void LoadCollider()
     {
         if (this.col != null) return;
-        this.col = GetComponent<Collider>();
+        this.col = GetComponentInParent<Collider>();
     }
     public virtual void Deduct(float damage, GameObject attacker = null)
     {
         if (this.isDead || this.isImmortal || damage <= 0f) return;
 
-        this.hp -= damage;
-        this.OnTakeDamage(damage, attacker);
-        this.OnTakeDamageEvent?.Invoke(damage);
+        float finalDamage = this.ApplyDefenseFormula(damage, this.defense);
+        this.hp -= finalDamage;
+        this.OnTakeDamage(finalDamage, attacker);
+        this.OnTakeDamageEvent?.Invoke(finalDamage);
 
         if (this.hp <= 0f)
         {
@@ -61,6 +66,13 @@ public abstract class BaseDameReceiver : BaseLoadComponent
 
         this.OnHpChanged(this.hp, this.maxHp);
         this.OnHpChangedEvent?.Invoke(this.hp, this.maxHp);
+    }
+
+    protected virtual float ApplyDefenseFormula(float incomingDamage, float defense)
+    {
+        if (defense <= 0f) return incomingDamage;
+        float finalDamage = incomingDamage - defense;
+        return Mathf.Max(1f, finalDamage);
     }
     public virtual void Add(float healAmount)
     {
@@ -89,6 +101,11 @@ public abstract class BaseDameReceiver : BaseLoadComponent
 
         this.OnHpChanged(this.hp, this.maxHp);
         this.OnHpChangedEvent?.Invoke(this.hp, this.maxHp);
+    }
+
+    public virtual void SetDefense(float newDefense)
+    {
+        this.defense = Mathf.Max(0f, newDefense);
     }
 
     protected virtual void OnDead()
