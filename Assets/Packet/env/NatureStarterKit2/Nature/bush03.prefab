@@ -1,4 +1,4 @@
-%YAML 1.1
+﻿%YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
 --- !u!1 &193742
 GameObject:
@@ -9,7 +9,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 429508}
-  - component: {fileID: 19375756}
   - component: {fileID: 3343124}
   - component: {fileID: 2322364}
   m_Layer: 0
@@ -34,15 +33,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!193 &19375756
-Tree:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 193742}
-  m_SpeedTreeWindAsset: {fileID: 0}
-  m_TreeData: {fileID: 11425052}
 --- !u!33 &3343124
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -74,8 +64,8 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2114920}
-  - {fileID: 2174254}
+  - {fileID: 2100000, guid: 216a7e882dab7d745a4fc6ccb3774f75, type: 2}
+  - {fileID: 2100000, guid: 216a7e882dab7d745a4fc6ccb3774f75, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
