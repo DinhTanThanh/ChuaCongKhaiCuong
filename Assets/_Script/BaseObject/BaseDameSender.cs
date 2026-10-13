@@ -93,7 +93,7 @@ public abstract class BaseDameSender : BaseLoadComponent
         if (!this.CanSendDamage(receiver)) return;
 
         float finalDamage = this.CalculateFinalDamage(this.damage, weapon, out bool isCritical);
-        receiver.Deduct(finalDamage, this.GetAttacker());
+        receiver.Deduct(finalDamage, this.GetAttacker(), isCritical);
 
         if (this.preventDuplicateHit)
         {
