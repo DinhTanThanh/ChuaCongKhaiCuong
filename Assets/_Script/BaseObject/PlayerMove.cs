@@ -24,6 +24,7 @@ public class PlayerMove : BaseMove
 
     protected virtual void HandleJumpInput()
     {
+        if (!this.isMoveEnabled) return;
         if (InputManager.Instance != null && InputManager.Instance.JumpPressed)
         {
             this.Jump();

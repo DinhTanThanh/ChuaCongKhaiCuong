@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class BaseController : BaseLoadComponent
 {
@@ -11,6 +12,7 @@ public class BaseController : BaseLoadComponent
     [SerializeField] protected WeaponSO currentWeapon;
     [SerializeField] protected List<WeaponSO> weaponList = new List<WeaponSO>();
     [SerializeField] protected BaseDameSender dameSender;
+    [SerializeField] protected bool enableKeyboardWeaponSwitch = true;
 
     // Sự kiện khi đổi vũ khí để UI hoặc các hệ thống khác lắng nghe
     public event Action<WeaponSO> OnWeaponChangedEvent;
@@ -50,6 +52,35 @@ public class BaseController : BaseLoadComponent
         else if (this.weaponList.Count > 0 && this.weaponList[0] != null)
         {
             this.ChangeWeapon(this.weaponList[0]);
+        }
+    }
+
+    public virtual bool EnableKeyboardWeaponSwitch
+    {
+        get => this.enableKeyboardWeaponSwitch;
+        set => this.enableKeyboardWeaponSwitch = value;
+    }
+
+    protected virtual void Update()
+    {
+        this.HandleWeaponSwitchInput();
+    }
+
+    protected virtual void HandleWeaponSwitchInput()
+    {
+        if (!this.enableKeyboardWeaponSwitch) return;
+
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null) return;
+
+        if (keyboard.digit1Key.wasPressedThisFrame) this.ChangeWeapon(0);
+        else if (keyboard.digit2Key.wasPressedThisFrame) this.ChangeWeapon(1);
+        else if (keyboard.digit3Key.wasPressedThisFrame) this.ChangeWeapon(2);
+        else if (keyboard.digit4Key.wasPressedThisFrame) this.ChangeWeapon(3);
+
+        if (keyboard.qKey.wasPressedThisFrame)
+        {
+            this.NextWeapon();
         }
     }
 

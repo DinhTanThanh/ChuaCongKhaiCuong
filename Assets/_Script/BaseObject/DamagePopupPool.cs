@@ -22,7 +22,6 @@ public class DamagePopupPool : BaseLoadComponent
     }
 
     [Header("Pool Configuration")]
-    [Tooltip("Prefab DamagePopup tùy chọn. Nếu để trống, hệ thống sẽ tự động khởi tạo linh hoạt bằng code.")]
     [SerializeField] protected DamagePopup popupPrefab;
     [SerializeField] protected int defaultPoolSize = 15;
     [SerializeField] protected Transform poolContainer;
@@ -98,14 +97,12 @@ public class DamagePopupPool : BaseLoadComponent
     {
         DamagePopup popup = null;
 
-        // Lấy từ pool, kiểm tra trường hợp object có thể đã bị hủy ngoài ý muốn
         while (this.pool.Count > 0)
         {
             popup = this.pool.Dequeue();
             if (popup != null) break;
         }
 
-        // Nếu pool hết hoặc chưa có object hợp lệ thì tạo mới (dynamic expand)
         if (popup == null)
         {
             popup = this.CreateNewPopup();
@@ -127,7 +124,7 @@ public class DamagePopupPool : BaseLoadComponent
     public virtual void ReturnToPool(DamagePopup popup)
     {
         if (popup == null) return;
-        if (!popup.gameObject.activeSelf) return; // Tránh thu hồi 2 lần
+        if (!popup.gameObject.activeSelf) return; 
 
         popup.gameObject.SetActive(false);
         if (this.poolContainer != null)

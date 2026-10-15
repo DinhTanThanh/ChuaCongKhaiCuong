@@ -1,4 +1,4 @@
-﻿using UnityEngine;
+using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
@@ -12,8 +12,18 @@ public class InputManager : MonoBehaviour
     protected Vector2 moveInput;
     protected bool jumpPressed;
 
+    [Header("Flight Inputs")]
+    protected bool flyTogglePressed;
+    protected bool flyUpPressed;
+    protected bool flyDownPressed;
+    protected bool flyBoostPressed;
+
     public Vector2 MoveInput => this.moveInput;
     public bool JumpPressed => this.jumpPressed;
+    public bool FlyTogglePressed => this.flyTogglePressed;
+    public bool FlyUpPressed => this.flyUpPressed;
+    public bool FlyDownPressed => this.flyDownPressed;
+    public bool FlyBoostPressed => this.flyBoostPressed;
 
     protected virtual void Awake()
     {
@@ -38,7 +48,26 @@ public class InputManager : MonoBehaviour
     {
         this.ReadMovementInput();
         this.ReadJumpInput();
+        this.ReadFlyInput();
         this.HandleCursorToggle();
+    }
+
+    protected virtual void ReadFlyInput()
+    {
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null)
+        {
+            this.flyTogglePressed = false;
+            this.flyUpPressed = false;
+            this.flyDownPressed = false;
+            this.flyBoostPressed = false;
+            return;
+        }
+
+        this.flyTogglePressed = keyboard.fKey.wasPressedThisFrame;
+        this.flyUpPressed = keyboard.spaceKey.isPressed || keyboard.eKey.isPressed;
+        this.flyDownPressed = keyboard.cKey.isPressed || keyboard.leftCtrlKey.isPressed;
+        this.flyBoostPressed = keyboard.leftShiftKey.isPressed;
     }
 
     protected virtual void ReadMovementInput()

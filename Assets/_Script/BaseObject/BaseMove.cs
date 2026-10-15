@@ -16,6 +16,14 @@ public abstract class BaseMove : BaseLoadComponent
     [SerializeField] protected Vector3 velocity;
     [SerializeField] protected Vector3 moveDirection;
     [SerializeField] protected Rigidbody rb;
+    [SerializeField] protected bool isMoveEnabled = true;
+
+    public virtual bool IsMoveEnabled
+    {
+        get => this.isMoveEnabled;
+        set => this.isMoveEnabled = value;
+    }
+
     protected override void LoadComponent()
     {
         base.LoadComponent();
@@ -29,11 +37,13 @@ public abstract class BaseMove : BaseLoadComponent
 
     protected virtual void Update()
     {
+        if (!this.isMoveEnabled) return;
         this.CheckGrounded();
     }
 
     protected virtual void FixedUpdate()
     {
+        if (!this.isMoveEnabled) return;
         this.HandleMovement();
         this.HandleMoveDirection();
     }
