@@ -26,16 +26,6 @@ public class WukongFly : BaseFly
     protected Vector3 initialCloudLocalPos;
     protected Animator cloudAnimator;
 
-#if UNITY_EDITOR
-    protected virtual void OnValidate()
-    {
-        if (this.cloudVfx != null)
-        {
-            this.ApplyCloudTransform();
-        }
-    }
-#endif
-
     public virtual void ApplyCloudTransform()
     {
         if (this.cloudVfx == null) return;
@@ -99,7 +89,6 @@ public class WukongFly : BaseFly
 
     protected virtual void InitCloud()
     {
-        // Nếu cloudVfx chưa được gán hoặc đang trỏ tới mây cũ SomersaultCloud_VFX
         if (this.cloudVfx == null || (this.cloudVfx != null && this.cloudVfx.name.Contains("SomersaultCloud")))
         {
             this.CreateDefaultCloud();
@@ -115,7 +104,6 @@ public class WukongFly : BaseFly
 
     protected virtual void CreateDefaultCloud()
     {
-        // 1. Kiểm tra đối tượng con CanDauVan
         Transform canDauVanTrans = this.transform.Find("CanDauVan");
         if (canDauVanTrans != null)
         {
@@ -124,8 +112,6 @@ public class WukongFly : BaseFly
             this.HideOldCloud();
             return;
         }
-
-        // 2. Kiểm tra ở đối tượng cha
         if (this.transform.parent != null)
         {
             Transform parentCloud = this.transform.parent.Find("CanDauVan");
@@ -138,18 +124,7 @@ public class WukongFly : BaseFly
             }
         }
 
-        // 3. Tự động khởi tạo từ Prefab
         GameObject prefab = Resources.Load<GameObject>("CanDauVan");
-#if UNITY_EDITOR
-        if (prefab == null)
-        {
-            prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/CanDauVan.prefab");
-        }
-        if (prefab == null)
-        {
-            prefab = UnityEditor.AssetDatabase.LoadAssetAtPath<GameObject>("Assets/Prefabs/CanDauVan/CanDauVan.prefab");
-        }
-#endif
         if (prefab != null)
         {
             this.HideOldCloud();
@@ -160,7 +135,6 @@ public class WukongFly : BaseFly
             return;
         }
 
-        // 4. Nếu không tìm thấy CanDauVan thì fallback mây cũ
         Transform oldCloud = this.transform.Find("SomersaultCloud_VFX");
         if (oldCloud != null)
         {
@@ -233,21 +207,6 @@ public class WukongFly : BaseFly
         {
             input = InputManager.Instance.MoveInput;
         }
-        else
-        {
-            Keyboard keyboard = Keyboard.current;
-            if (keyboard != null)
-            {
-                float h = 0f;
-                float v = 0f;
-                if (keyboard.dKey.isPressed || keyboard.rightArrowKey.isPressed) h += 1f;
-                if (keyboard.aKey.isPressed || keyboard.leftArrowKey.isPressed) h -= 1f;
-                if (keyboard.wKey.isPressed || keyboard.upArrowKey.isPressed) v += 1f;
-                if (keyboard.sKey.isPressed || keyboard.downArrowKey.isPressed) v -= 1f;
-                input = new Vector2(h, v).normalized;
-            }
-        }
-
         if (input.sqrMagnitude < 0.001f) return Vector3.zero;
 
         Vector3 inputDir = new Vector3(input.x, 0f, input.y);
@@ -276,17 +235,6 @@ public class WukongFly : BaseFly
             if (InputManager.Instance.FlyDownPressed) vertical -= 1f;
             return vertical;
         }
-        else
-        {
-            Keyboard keyboard = Keyboard.current;
-            if (keyboard != null)
-            {
-                float vertical = 0f;
-                if (keyboard.spaceKey.isPressed || keyboard.eKey.isPressed) vertical += 1f;
-                if (keyboard.cKey.isPressed || keyboard.leftCtrlKey.isPressed) vertical -= 1f;
-                return vertical;
-            }
-        }
         return 0f;
     }
 
@@ -295,14 +243,6 @@ public class WukongFly : BaseFly
         if (InputManager.Instance != null)
         {
             return InputManager.Instance.FlyBoostPressed;   
-        }
-        else
-        {
-            Keyboard keyboard = Keyboard.current;
-            if (keyboard != null)
-            {
-                return keyboard.leftShiftKey.isPressed;
-            }
         }
         return false;
     }

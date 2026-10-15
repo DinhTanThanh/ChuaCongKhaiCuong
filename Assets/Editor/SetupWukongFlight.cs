@@ -153,7 +153,6 @@ public static class SetupWukongFlight
             EditorUtility.SetDirty(wukongObj);
             EditorSceneManager.MarkSceneDirty(scene);
             EditorSceneManager.SaveScene(scene);
-            Debug.Log("[SetupWukongFlight] ✅ Đã gắn thành công Cân Đẩu Vân mới (CanDauVan) cho Wukong!");
         }
     }
 }

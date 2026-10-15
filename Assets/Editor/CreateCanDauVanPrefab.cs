@@ -214,6 +214,5 @@ public static class CreateCanDauVanPrefab
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
 
-        Debug.Log("[CreateCanDauVanPrefab] ✅ Đã tạo thành công Prefab Cân Đẩu Vân tại: " + PrefabPath);
     }
 }

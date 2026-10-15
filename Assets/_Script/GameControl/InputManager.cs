@@ -18,12 +18,16 @@ public class InputManager : MonoBehaviour
     protected bool flyDownPressed;
     protected bool flyBoostPressed;
 
+    [Header("Camera / View Inputs")]
+    protected bool viewSwitchPressed;
+
     public Vector2 MoveInput => this.moveInput;
     public bool JumpPressed => this.jumpPressed;
     public bool FlyTogglePressed => this.flyTogglePressed;
     public bool FlyUpPressed => this.flyUpPressed;
     public bool FlyDownPressed => this.flyDownPressed;
     public bool FlyBoostPressed => this.flyBoostPressed;
+    public bool ViewSwitchPressed => this.viewSwitchPressed;
 
     protected virtual void Awake()
     {
@@ -49,7 +53,20 @@ public class InputManager : MonoBehaviour
         this.ReadMovementInput();
         this.ReadJumpInput();
         this.ReadFlyInput();
+        this.ReadViewInput();
         this.HandleCursorToggle();
+    }
+
+    protected virtual void ReadViewInput()
+    {
+        Keyboard keyboard = Keyboard.current;
+        if (keyboard == null)
+        {
+            this.viewSwitchPressed = false;
+            return;
+        }
+
+        this.viewSwitchPressed = keyboard.vKey.wasPressedThisFrame;
     }
 
     protected virtual void ReadFlyInput()

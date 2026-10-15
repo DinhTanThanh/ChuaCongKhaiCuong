@@ -247,11 +247,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4908643076642193176, guid: a6aa70f707f174246934ad3c1cb59789, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.955
+      value: -0.6
       objectReference: {fileID: 0}
     - target: {fileID: 4908643076642193176, guid: a6aa70f707f174246934ad3c1cb59789, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.6
+      value: 0.25
       objectReference: {fileID: 0}
     - target: {fileID: 4908643076642193176, guid: a6aa70f707f174246934ad3c1cb59789, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1008,6 +1008,7 @@ GameObject:
   - component: {fileID: 530699113}
   - component: {fileID: 530699114}
   - component: {fileID: 530699115}
+  - component: {fileID: 530699116}
   m_Layer: 0
   m_Name: Wukong
   m_TagString: Untagged
@@ -1126,6 +1127,26 @@ MonoBehaviour:
   preventDuplicateHit: 1
   hitReceivers: []
   controller: {fileID: 530699112}
+--- !u!114 &530699116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 530699110}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f17ea6b615c27894eb05b9ac28b8a6cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eyePoint: {fileID: 0}
+  eyeOffset: {x: 0, y: 1.6, z: 0.15}
+  tppTarget: {fileID: 0}
+  hideEntireCharacterInFPP: 1
+  renderersToHideInFPP: []
+  autoFindHeadMeshesIfEmpty: 1
+  autoRegisterOnEnable: 1
+  rotateWithCameraInFPP: 1
 --- !u!1 &638074413
 GameObject:
   m_ObjectHideFlags: 0
@@ -1333,6 +1354,68 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a380ae8fcfff0a54d8febe6389e9b2d7, type: 3}
+--- !u!1 &1051881397
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1051881399}
+  - component: {fileID: 1051881398}
+  m_Layer: 0
+  m_Name: '[CameraSystem]'
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1051881398
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1051881397}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8b706a5e2438534b883ef4169f88a7c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  switchMode: 0
+  currentPerspective: 0
+  currentTarget: {fileID: 530699116}
+  autoFindTargetIfNull: 1
+  cinemachineBrain: {fileID: 330585548}
+  tppCinemachineCamera: {fileID: 1427303971}
+  fppCinemachineCamera: {fileID: 0}
+  activePriority: 20
+  inactivePriority: 10
+  mainCamera: {fileID: 330585545}
+  fppFOV: 75
+  tppFOV: 60
+  fovTransitionSpeed: 8
+  mouseSensitivity: 2
+  minPitch: -75
+  maxPitch: 80
+  standaloneTppOffset: {x: 0, y: 1.8, z: -4.5}
+  standaloneFollowSpeed: 12
+--- !u!4 &1051881399
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1051881397}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1124546280
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2276,3 +2359,4 @@ SceneRoots:
   - {fileID: 1427303972}
   - {fileID: 134776153}
   - {fileID: 638074415}
+  - {fileID: 1051881399}
