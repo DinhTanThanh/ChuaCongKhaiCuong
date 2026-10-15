@@ -7,10 +7,14 @@ public abstract class BaseDameReceiver : BaseLoadComponent
     [SerializeField] protected float hp;
     [SerializeField] protected float maxHp;
     [SerializeField] protected bool isDead = false;
-    [SerializeField] protected bool isImmortal = false; //bât tử
+    [SerializeField] protected bool isImmortal = false; // Bất tử
 
     [Header("Defense Settings")]
     [SerializeField] protected float defense = 0f;
+
+    [Header("Damage Popup Settings")]
+    [SerializeField] protected bool showDamagePopup = true;
+    [SerializeField] protected Vector3 popupOffset = new Vector3(0f, 1.8f, 0f);
 
     [Header("Components")]
     [SerializeField] protected Collider col;
@@ -47,7 +51,8 @@ public abstract class BaseDameReceiver : BaseLoadComponent
         if (this.col != null) return;
         this.col = GetComponentInParent<Collider>();
     }
-    public virtual void Deduct(float damage, GameObject attacker = null)
+
+    public virtual void Deduct(float damage, GameObject attacker = null, bool isCritical = false)
     {
         if (this.isDead || this.isImmortal || damage <= 0f) return;
 
@@ -55,6 +60,12 @@ public abstract class BaseDameReceiver : BaseLoadComponent
         this.hp -= finalDamage;
         this.OnTakeDamage(finalDamage, attacker);
         this.OnTakeDamageEvent?.Invoke(finalDamage);
+
+        // Hiển thị số sát thương (Màu đỏ nếu thường, Màu vàng nếu chí mạng)
+        if (this.showDamagePopup)
+        {
+            this.ShowDamagePopup(finalDamage, isCritical: isCritical, isHeal: false);
+        }
 
         if (this.hp <= 0f)
         {
@@ -74,15 +85,40 @@ public abstract class BaseDameReceiver : BaseLoadComponent
         float finalDamage = incomingDamage - defense;
         return Mathf.Max(1f, finalDamage);
     }
+
     public virtual void Add(float healAmount)
     {
         if (this.isDead || healAmount <= 0f) return;
 
+        float prevHp = this.hp;
         this.hp = Mathf.Min(this.hp + healAmount, this.maxHp);
+        float actualHealed = this.hp - prevHp;
+
+        // Hiển thị số hồi máu (Màu xanh lá cây)
+        if (this.showDamagePopup && actualHealed > 0f)
+        {
+            this.ShowDamagePopup(actualHealed, isCritical: false, isHeal: true);
+        }
 
         this.OnHpChanged(this.hp, this.maxHp);
         this.OnHpChangedEvent?.Invoke(this.hp, this.maxHp);
     }
+
+    protected virtual void ShowDamagePopup(float amount, bool isCritical = false, bool isHeal = false)
+    {
+        Vector3 spawnPos = this.GetDamagePopupPosition();
+        DamagePopup.Create(spawnPos, amount, isCritical, isHeal);
+    }
+
+    protected virtual Vector3 GetDamagePopupPosition()
+    {
+        if (this.col != null)
+        {
+            return this.col.bounds.center + Vector3.up * (this.col.bounds.extents.y * 0.7f);
+        }
+        return this.transform.position + this.popupOffset;
+    }
+
     public virtual void Reborn()
     {
         this.isDead = false;
@@ -90,6 +126,7 @@ public abstract class BaseDameReceiver : BaseLoadComponent
         this.OnHpChanged(this.hp, this.maxHp);
         this.OnHpChangedEvent?.Invoke(this.hp, this.maxHp);
     }
+
     public virtual void SetMaxHp(float newMaxHp, bool healToFull = false)
     {
         if (newMaxHp <= 0f) return;
@@ -112,12 +149,34 @@ public abstract class BaseDameReceiver : BaseLoadComponent
     {
         // Class con ghi đè logic xử lý cái chết (ví dụ: play Die animation, disable movement)
     }
+
     protected virtual void OnTakeDamage(float damage, GameObject attacker)
     {
         // Class con ghi đè hiệu ứng nhận đòn
     }
+
     protected virtual void OnHpChanged(float currentHp, float maxHp)
     {
         // Class con có thể cập nhật HealthBar
     }
+
+#if UNITY_EDITOR
+    [ContextMenu("Test Take Damage - Normal (50 - Màu đỏ)")]
+    protected virtual void EditorTestNormalDamage()
+    {
+        this.Deduct(50f, null, isCritical: false);
+    }
+
+    [ContextMenu("Test Take Damage - Critical (100 - Màu vàng)")]
+    protected virtual void EditorTestCriticalDamage()
+    {
+        this.Deduct(100f, null, isCritical: true);
+    }
+
+    [ContextMenu("Test Heal (30 - Màu xanh lá)")]
+    protected virtual void EditorTestHeal()
+    {
+        this.Add(30f);
+    }
+#endif
 }
