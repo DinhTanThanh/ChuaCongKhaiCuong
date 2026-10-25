@@ -5,7 +5,6 @@ using UnityEngine;
 public abstract class BaseDameSender : BaseLoadComponent
 {
     [SerializeField] protected float damage;
-    [Range(0f, 1f)]
     [SerializeField] protected float critRate;
     [SerializeField] protected float critDamageMultiplier;
     [SerializeField] protected float minDamage = 1f;

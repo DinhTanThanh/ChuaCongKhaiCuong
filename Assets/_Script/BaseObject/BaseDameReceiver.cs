@@ -161,10 +161,10 @@ public abstract class BaseDameReceiver : BaseLoadComponent
     }
 
 #if UNITY_EDITOR
-    [ContextMenu("Test Take Damage - Normal (50 - Màu đỏ)")]
+    [ContextMenu("Test Take Damage - Normal (60 - Màu đỏ)")]
     protected virtual void EditorTestNormalDamage()
     {
-        this.Deduct(50f, null, isCritical: false);
+        this.Deduct(60f, null, isCritical: false);
     }
 
     [ContextMenu("Test Take Damage - Critical (100 - Màu vàng)")]
