@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c49f2f3931cf482892dc637cfc64175d, type: 3}
+  m_Name: BulletSO
+  m_EditorClassIdentifier: 
+  weaponName: New Weapon
+  bonusDamage: 100
+  damageMultiplier: 1
+  bonusCritRate: 0.5
+  bonusCritDamage: 1.5
+  bulletPrefab: {fileID: 7525824094434616728, guid: a6d207512127c1640941bd59069dd230, type: 3}
+  launchForce: 45
+  mass: 1.5
+  gravityScale: 1
+  explosionRadius: 3.5
+  lifeTime: 7
+  explosionVfxPrefab: {fileID: 4989026897685075680, guid: 3a27c90aebbd1bc4c97273cdca925107, type: 3}
