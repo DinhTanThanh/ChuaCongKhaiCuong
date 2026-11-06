@@ -55,8 +55,7 @@ public class CannonBulletImpact : BaseLoadComponent
 
     protected virtual void Start()
     {
-        // Tự động tiêu hủy cả viên đạn sau khoảng thời gian lifeTime nếu không va chạm
-        Destroy(this.GetRootBullet(), this.lifeTime);
+        // Khi dùng Pooling, thời gian sống được quản lý bởi OnSpawnFromPool trong Controller
     }
 
     public virtual void SetShooter(GameObject newShooter)
@@ -105,16 +104,34 @@ public class CannonBulletImpact : BaseLoadComponent
             sender.ExplodeDamage(hitPoint);
         }
 
-        // Tiêu hủy toàn bộ đối tượng đạn
-        Destroy(this.GetRootBullet());
+        // Thông báo cho Controller thu hồi viên đạn
+        if (this.controller != null)
+        {
+            this.controller.Despawn();
+        }
+        else
+        {
+            this.gameObject.SetActive(false);
+        }
     }
 
     protected virtual void SpawnExplosionVfx(Vector3 hitPoint)
     {
         if (this.explosionVfxPrefab == null) return;
 
-        GameObject vfxInstance = Instantiate(this.explosionVfxPrefab, hitPoint, Quaternion.identity);
-        Destroy(vfxInstance, 3.5f);
+        // Ưu tiên spawn và thu hồi hiệu ứng nổ qua PoolManager
+        if (PoolManager.Instance != null)
+        {
+            GameObject vfxInstance = PoolManager.Instance.Spawn(this.explosionVfxPrefab, hitPoint, Quaternion.identity);
+            if (vfxInstance != null)
+            {
+                PoolManager.Instance.Despawn(vfxInstance, 3.5f);
+                return;
+            }
+        }
+
+        GameObject fallbackVfx = Instantiate(this.explosionVfxPrefab, hitPoint, Quaternion.identity);
+        Destroy(fallbackVfx, 3.5f);
     }
 
     protected virtual CannonBulletDameSender GetDameSender()
@@ -133,5 +150,10 @@ public class CannonBulletImpact : BaseLoadComponent
     {
         if (this.controller != null) return this.controller.gameObject;
         return this.transform.root.gameObject;
+    }
+
+    public virtual void ResetImpact()
+    {
+        this.hasExploded = false;
     }
 }

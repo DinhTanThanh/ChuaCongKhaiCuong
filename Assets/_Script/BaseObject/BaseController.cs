@@ -126,7 +126,8 @@ public class BaseController : BaseLoadComponent
 
         if (this.dameSender != null)
         {
-            this.dameSender.EquipWeapon(weapon);
+            float weaponDamage = weapon != null ? weapon.bonusDamage : 0f;
+            this.dameSender.SetDamage(weaponDamage);
         }
     }
 }

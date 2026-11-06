@@ -1,7 +1,8 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody))]
-public class CannonBulletController : BaseLoadComponent
+public class CannonBulletController : BaseLoadComponent, IPoolable
 {
     [Header("Bullet Components")]
     [SerializeField] protected BulletSO bulletSO;
@@ -10,6 +11,8 @@ public class CannonBulletController : BaseLoadComponent
     [SerializeField] protected CannonBulletMove bulletMove;
     [SerializeField] protected CannonBulletDameSender dameSender;
     [SerializeField] protected CannonBulletImpact bulletImpact;
+
+    protected Coroutine lifeTimerCoroutine;
 
     public virtual BulletSO BulletSO => this.bulletSO;
     public virtual Rigidbody Rigidbody => this.rb;
@@ -70,7 +73,7 @@ public class CannonBulletController : BaseLoadComponent
     public virtual void LoadBulletSO()
     {
         if (this.bulletSO != null) return;
-        this.bulletSO = Resources.Load<BulletSO>(transform.name+"SO");
+        this.bulletSO = Resources.Load<BulletSO>(transform.name + "SO");
         this.ApplyBulletSO();
     }
 
@@ -81,8 +84,6 @@ public class CannonBulletController : BaseLoadComponent
         if (this.dameSender != null)
         {
             this.dameSender.SetDamage(this.bulletSO.damage);
-            this.dameSender.SetCritRate(this.bulletSO.critRate);
-            this.dameSender.SetCritDamageMultiplier(this.bulletSO.critDamageMultiplier);
             this.dameSender.SetExplosionRadius(this.bulletSO.explosionRadius);
         }
 
@@ -98,7 +99,7 @@ public class CannonBulletController : BaseLoadComponent
         }
     }
 
-    public virtual void Launch(Vector3 direction, float force, GameObject shooter = null)
+    public virtual void Launch(Vector3 direction, float force, GameObject shooter)
     {
         if (shooter != null)
         {
@@ -111,7 +112,7 @@ public class CannonBulletController : BaseLoadComponent
             {
                 this.bulletImpact.SetShooter(shooter);
             }
- 
+
             if (this.bulletCollider == null) this.LoadCollider();
             if (this.bulletCollider != null)
             {
@@ -128,20 +129,43 @@ public class CannonBulletController : BaseLoadComponent
         {
             this.bulletMove.Launch(direction, force);
         }
+
+        this.StartLifeTimer();
+    }
+
+    public virtual void Despawn()
+    {
+        this.StopLifeTimer();
+        if (PoolManager.Instance != null)
+        {
+            PoolManager.Instance.Despawn(this.gameObject);
+        }
         else
         {
-            if (this.rb == null) this.LoadRigidbody();
-            if (this.rb != null)
-            {
-                this.rb.isKinematic = false;
-                this.rb.WakeUp();
-                this.rb.linearVelocity = (direction != Vector3.zero ? direction.normalized : this.transform.forward) * (force > 0f ? force : 45f);
-            }
-            else
-            {
-                Debug.LogWarning($"[{this.gameObject.name}] CannonBulletController: Không tìm thấy component CannonBulletMove lẫn Rigidbody để phóng đạn!");
-            }
+            this.gameObject.SetActive(false);
         }
+    }
+
+    protected virtual void StartLifeTimer()
+    {
+        this.StopLifeTimer();
+        float life = (this.bulletSO != null && this.bulletSO.lifeTime > 0f) ? this.bulletSO.lifeTime : 7f;
+        this.lifeTimerCoroutine = this.StartCoroutine(this.LifeTimerRoutine(life));
+    }
+
+    protected virtual void StopLifeTimer()
+    {
+        if (this.lifeTimerCoroutine != null)
+        {
+            this.StopCoroutine(this.lifeTimerCoroutine);
+            this.lifeTimerCoroutine = null;
+        }
+    }
+
+    protected virtual IEnumerator LifeTimerRoutine(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        this.Despawn();
     }
 
     protected virtual void OnTriggerEnter(Collider other)
@@ -151,4 +175,21 @@ public class CannonBulletController : BaseLoadComponent
             this.bulletImpact.OnImpactTrigger(other);
         }
     }
+
+    #region IPoolable Implementation
+
+    public virtual void OnSpawnFromPool()
+    {
+        if (this.bulletMove != null) this.bulletMove.ResetMove();
+        if (this.bulletImpact != null) this.bulletImpact.ResetImpact();
+        this.ApplyBulletSO();
+    }
+
+    public virtual void OnReturnToPool()
+    {
+        this.StopLifeTimer();
+        if (this.bulletMove != null) this.bulletMove.StopMove();
+    }
+
+    #endregion
 }

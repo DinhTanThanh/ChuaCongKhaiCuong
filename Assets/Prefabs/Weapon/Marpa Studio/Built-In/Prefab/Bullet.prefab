@@ -135,16 +135,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 804c67bd77598f14a8c7cdd910b03c6f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: 0
-  critRate: 0
-  critDamageMultiplier: 0
-  minDamage: 1
-  equippedWeaponSO: {fileID: 0}
-  col: {fileID: 6554940591019112043}
-  attacker: {fileID: 2214757989559941362}
-  preventDuplicateHit: 1
-  hitReceivers: []
+  bulletSO: {fileID: 11400000, guid: 207172c7ac49af44bb0eff90b415b1a7, type: 2}
   rb: {fileID: 5686353262656472658}
-  lifeTime: 7
-  explosionVfxPrefab: {fileID: 0}
-  explosionRadius: 3.5
+  bulletCollider: {fileID: 6554940591019112043}
+  bulletMove: {fileID: 0}
+  dameSender: {fileID: 0}
+  bulletImpact: {fileID: 0}

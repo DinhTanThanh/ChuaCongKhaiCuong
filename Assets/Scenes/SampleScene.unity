@@ -154,6 +154,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   lockCursor: 1
+  leftClickHeld: 0
+  leftClickReleased: 0
 --- !u!4 &134776153
 Transform:
   m_ObjectHideFlags: 0
@@ -1548,6 +1550,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8878031106953616337, guid: 97a39847a5e6d3f439edcb49a9e23b9e, type: 3}
+      propertyPath: bulletPrefab
+      value: 
+      objectReference: {fileID: 1538462027049100107}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1738,11 +1744,32 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7690786221078144531, guid: a6d207512127c1640941bd59069dd230, type: 3}
+      propertyPath: damage
+      value: 100
+      objectReference: {fileID: 0}
+    - target: {fileID: 7690786221078144531, guid: a6d207512127c1640941bd59069dd230, type: 3}
+      propertyPath: critRate
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 7690786221078144531, guid: a6d207512127c1640941bd59069dd230, type: 3}
+      propertyPath: equippedWeaponSO
+      value: 
+      objectReference: {fileID: 0}
+    - target: {fileID: 7690786221078144531, guid: a6d207512127c1640941bd59069dd230, type: 3}
+      propertyPath: critDamageMultiplier
+      value: 1.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a6d207512127c1640941bd59069dd230, type: 3}
+--- !u!1 &1538462027049100107 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 922357024206726530, guid: a6d207512127c1640941bd59069dd230, type: 3}
+  m_PrefabInstance: {fileID: 1538462027049100106}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &6611425487163776112
 PrefabInstance:
   m_ObjectHideFlags: 0
