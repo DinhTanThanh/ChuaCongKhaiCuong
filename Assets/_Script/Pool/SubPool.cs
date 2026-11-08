@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-
+//IPoolable két thừa từ object rồi override lại để khi spawn thì nó làm gì và khi return thì nó làm gì
+//PooledObject kêt thừa object khi sopawn sẽ load tới để gán id
 [Serializable]
 public class SubPool
 {
@@ -17,9 +18,8 @@ public class SubPool
     public int DefaultSize => this.defaultSize;
     public bool CanGrow => this.canGrow;
     public Transform Container => this.container;
-    public int InactiveCount => this.inactiveQueue.Count;
 
-    public SubPool(string key, GameObject prefab, int defaultSize = 10, bool canGrow = true)
+    public SubPool(string key, GameObject prefab, int defaultSize, bool canGrow = true)
     {
         this.poolKey = key;
         this.prefab = prefab;
@@ -27,12 +27,11 @@ public class SubPool
         this.canGrow = canGrow;
     }
 
-    public virtual void Initialize(Transform rootManagerTransform)
+    public virtual void Initialize()
     {
-        if (this.container == null && rootManagerTransform != null)
+        if (this.container == null)
         {
             GameObject subContainer = new GameObject($"[SubPool_{this.poolKey}]");
-            subContainer.transform.SetParent(rootManagerTransform);
             this.container = subContainer.transform;
         }
         this.Prewarm();
@@ -42,7 +41,7 @@ public class SubPool
     {
         if (this.prefab == null)
         {
-            Debug.LogWarning($"[SubPool: {this.poolKey}] Prefab chưa được gán, không thể Prewarm!");
+            Debug.LogWarning("Prefab chưa được gán, không thể Prewarm!");
             return;
         }
 
@@ -56,25 +55,20 @@ public class SubPool
 
     protected virtual GameObject CreateNewInstance()
     {
-        GameObject obj = UnityEngine.Object.Instantiate(this.prefab, this.container);
-        obj.name = $"{this.prefab.name}_{this.inactiveQueue.Count + 1}";
-
-        PooledObject pooledTracker = obj.GetComponent<PooledObject>();
-        if (pooledTracker == null)
-        {
-            pooledTracker = obj.AddComponent<PooledObject>();
-        }
+        GameObject obj = GameObject.Instantiate(this.prefab, this.container);
+        obj.name = this.prefab.name+ "_" +this.inactiveQueue.Count + 1;
+        PooledObject pooledTracker= obj.GetComponent<PooledObject>();
+        
         pooledTracker.PoolKey = this.poolKey;
         return obj;
     }
 
     public virtual GameObject Spawn(Vector3 position, Quaternion rotation)
     {
-        GameObject obj = null;
-        while (this.inactiveQueue.Count > 0)
+        GameObject obj = null; 
+        if (this.inactiveQueue.Count > 0)
         {
             obj = this.inactiveQueue.Dequeue();
-            if (obj != null) break;
         }
         if (obj == null)
         {
@@ -88,30 +82,18 @@ public class SubPool
         obj.transform.position = position;
         obj.transform.rotation = rotation;
         obj.SetActive(true);
-        IPoolable[] poolables = obj.GetComponentsInChildren<IPoolable>(true);
-        foreach (var p in poolables)
-        {
-            p.OnSpawnFromPool();
-        }
         return obj;
     }
 
     public virtual void Despawn(GameObject obj)
     {
         if (obj == null) return;
-        IPoolable[] poolables = obj.GetComponentsInChildren<IPoolable>(true);
-        foreach (var p in poolables)
+        IPoolable poolables = obj.GetComponentInChildren<IPoolable>(true);
+        if (poolables !=null)
         {
-            p.OnReturnToPool();
+            poolables.OnReturnToPool();
         }
-
         obj.SetActive(false);
-
-        if (this.container != null)
-        {
-            obj.transform.SetParent(this.container);
-        }
-
         this.inactiveQueue.Enqueue(obj);
     }
 }

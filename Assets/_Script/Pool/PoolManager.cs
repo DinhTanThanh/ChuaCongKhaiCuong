@@ -5,22 +5,7 @@ using UnityEngine;
 public class PoolManager : BaseLoadComponent
 {
     private static PoolManager instance;
-    public static PoolManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = FindFirstObjectByType<PoolManager>();
-                if (instance == null)
-                {
-                    GameObject managerObj = new GameObject("_PoolManager");
-                    instance = managerObj.AddComponent<PoolManager>();
-                }
-            }
-            return instance;
-        }
-    }
+    public static PoolManager Instance => instance;
 
     [SerializeField] protected List<SubPool> configuredPools = new List<SubPool>();
 
@@ -59,7 +44,7 @@ public class PoolManager : BaseLoadComponent
                 continue;
             }
 
-            subPool.Initialize(this.transform);
+            subPool.Initialize();
             this.poolDictionary.Add(subPool.PoolKey, subPool);
         }
     }
@@ -74,7 +59,7 @@ public class PoolManager : BaseLoadComponent
         }
 
         SubPool newSubPool = new SubPool(poolKey, prefab, defaultSize, canGrow);
-        newSubPool.Initialize(this.transform);
+        newSubPool.Initialize();
 
         this.poolDictionary.Add(poolKey, newSubPool);
         this.configuredPools.Add(newSubPool);
