@@ -33,14 +33,12 @@ public class CannonBulletDameSender : BaseDameSender
 
         BulletSO bulletSO = this.controller.BulletSO;
         this.SetDamage(bulletSO.damage);
-        this.SetCritRate(bulletSO.critRate);
-        this.SetCritDamageMultiplier(bulletSO.critDamageMultiplier);
         this.SetExplosionRadius(bulletSO.explosionRadius);
     }
 
-    public virtual void SetAttacker(GameObject newAttacker)
+    public override void SetAttacker(GameObject newAttacker)
     {
-        this.attacker = newAttacker;
+        base.SetAttacker(newAttacker);
     }
 
     public virtual void SetExplosionRadius(float newRadius)

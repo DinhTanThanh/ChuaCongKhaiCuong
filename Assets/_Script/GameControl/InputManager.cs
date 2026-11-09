@@ -21,6 +21,10 @@ public class InputManager : MonoBehaviour
     [Header("Camera / View Inputs")]
     protected bool viewSwitchPressed;
 
+    [Header("Mouse / Action Inputs")]
+    [SerializeField] protected bool leftClickHeld;
+    [SerializeField] protected bool leftClickReleased;  
+
     public Vector2 MoveInput => this.moveInput;
     public bool JumpPressed => this.jumpPressed;
     public bool FlyTogglePressed => this.flyTogglePressed;
@@ -28,6 +32,8 @@ public class InputManager : MonoBehaviour
     public bool FlyDownPressed => this.flyDownPressed;
     public bool FlyBoostPressed => this.flyBoostPressed;
     public bool ViewSwitchPressed => this.viewSwitchPressed;
+    public bool LeftClickHeld => this.leftClickHeld;
+    public bool LeftClickReleased => this.leftClickReleased;
 
     protected virtual void Awake()
     {
@@ -43,8 +49,8 @@ public class InputManager : MonoBehaviour
     {
         if (this.lockCursor)
         {
-            Cursor.lockState = CursorLockMode.Locked; //khóa chết con chuột ở giữa màn hình
-            Cursor.visible = false; //ẩn con chuột đi nếu muốn bật lại thì true
+            Cursor.lockState = CursorLockMode.Locked; 
+            Cursor.visible = false;                 
         }
     }
 
@@ -54,7 +60,21 @@ public class InputManager : MonoBehaviour
         this.ReadJumpInput();
         this.ReadFlyInput();
         this.ReadViewInput();
+        this.ReadMouseInput();
         this.HandleCursorToggle();
+    }
+    protected virtual void ReadMouseInput()
+    {
+        Mouse mouse = Mouse.current;
+        if (mouse == null)
+        {
+            this.leftClickHeld = false;
+            this.leftClickReleased = false;
+            return;
+        }
+
+        this.leftClickHeld = mouse.leftButton.isPressed;
+        this.leftClickReleased = mouse.leftButton.wasReleasedThisFrame;
     }
 
     protected virtual void ReadViewInput()

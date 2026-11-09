@@ -174,12 +174,12 @@ MonoBehaviour:
   critRate: 0
   critDamageMultiplier: 0
   minDamage: 1
-  equippedWeaponSO: {fileID: 11400000, guid: 207172c7ac49af44bb0eff90b415b1a7, type: 2}
+  equippedWeaponSO: {fileID: 0}
   col: {fileID: 6366831649237311823}
   attacker: {fileID: 922357024206726530}
   preventDuplicateHit: 1
   hitReceivers: []
-  controller: {fileID: 7525824094434616728}
+  controller: {fileID: 0}
   explosionRadius: 3.5
 --- !u!1 &7929817408642515863
 GameObject:

@@ -1,25 +1,11 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class PoolManager : BaseLoadComponent
 {
     private static PoolManager instance;
-    public static PoolManager Instance
-    {
-        get
-        {
-            if (instance == null)
-            {
-                instance = FindFirstObjectByType<PoolManager>();
-                if (instance == null)
-                {
-                    GameObject managerObj = new GameObject("_PoolManager");
-                    instance = managerObj.AddComponent<PoolManager>();
-                }
-            }
-            return instance;
-        }
-    }
+    public static PoolManager Instance => instance;
 
     [SerializeField] protected List<SubPool> configuredPools = new List<SubPool>();
 
@@ -58,14 +44,11 @@ public class PoolManager : BaseLoadComponent
                 continue;
             }
 
-            subPool.Initialize(this.transform);
+            subPool.Initialize();
             this.poolDictionary.Add(subPool.PoolKey, subPool);
         }
     }
 
-    /// <summary>
-    /// Đăng ký thêm hoặc tạo động một Sub-Pool mới khi game đang chạy
-    /// </summary>
     public virtual SubPool CreateSubPool(string poolKey, GameObject prefab, int defaultSize = 10, bool canGrow = true)
     {
         if (string.IsNullOrEmpty(poolKey) || prefab == null) return null;
@@ -76,7 +59,7 @@ public class PoolManager : BaseLoadComponent
         }
 
         SubPool newSubPool = new SubPool(poolKey, prefab, defaultSize, canGrow);
-        newSubPool.Initialize(this.transform);
+        newSubPool.Initialize();
 
         this.poolDictionary.Add(poolKey, newSubPool);
         this.configuredPools.Add(newSubPool);
@@ -95,9 +78,7 @@ public class PoolManager : BaseLoadComponent
         return subPool.Spawn(position, rotation);
     }
 
-    /// <summary>
-    /// Lấy một component từ Sub-Pool thông qua Key (ví dụ: PoolManager.Instance.Spawn<CannonBulletController>("Bullet", pos, rot))
-    /// </summary>
+
     public virtual T Spawn<T>(string poolKey, Vector3 position, Quaternion rotation) where T : Component
     {
         GameObject obj = this.Spawn(poolKey, position, rotation);
@@ -106,9 +87,7 @@ public class PoolManager : BaseLoadComponent
         return obj.GetComponent<T>();
     }
 
-    /// <summary>
-    /// Lấy object từ Pool dựa trên Prefab (Tự động tạo Sub-Pool nếu chưa tồn tại)
-    /// </summary>
+
     public virtual GameObject Spawn(GameObject prefab, Vector3 position, Quaternion rotation)
     {
         if (prefab == null) return null;
@@ -122,9 +101,6 @@ public class PoolManager : BaseLoadComponent
         return this.Spawn(key, position, rotation);
     }
 
-    /// <summary>
-    /// Lấy component từ Pool dựa trên Prefab Component
-    /// </summary>
     public virtual T Spawn<T>(T prefabComponent, Vector3 position, Quaternion rotation) where T : Component
     {
         if (prefabComponent == null) return null;
@@ -135,9 +111,7 @@ public class PoolManager : BaseLoadComponent
         return obj.GetComponent<T>();
     }
 
-    /// <summary>
-    /// Thu hồi object về đúng Sub-Pool quản lý nó
-    /// </summary>
+
     public virtual void Despawn(GameObject obj)
     {
         if (obj == null) return;
@@ -152,33 +126,25 @@ public class PoolManager : BaseLoadComponent
             }
         }
 
-        // Fallback: nếu object không thuộc pool nào
         Debug.LogWarning($"[PoolManager] Object '{obj.name}' không có thông tin Sub-Pool hợp lệ. Đang dùng fallback Destroy!");
         Destroy(obj);
     }
 
-    /// <summary>
-    /// Thu hồi object về Sub-Pool sau một khoảng thời gian
-    /// </summary>
     public virtual void Despawn(GameObject obj, float delay)
     {
         if (obj == null) return;
+        this.StartCoroutine(this.DespawnDelayRoutine(obj, delay));
+    }
 
-        PooledObject tracker = obj.GetComponent<PooledObject>();
-        if (tracker != null)
+    protected virtual IEnumerator DespawnDelayRoutine(GameObject obj, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        if (obj != null && obj.activeSelf)
         {
-            tracker.ReturnToPool(delay);
-        }
-        else
-        {
-            tracker = obj.AddComponent<PooledObject>();
-            tracker.ReturnToPool(delay);
+            this.Despawn(obj);
         }
     }
 
-    /// <summary>
-    /// Lấy tham chiếu đến một Sub-Pool theo Key nếu cần can thiệp trực tiếp
-    /// </summary>
     public virtual SubPool GetSubPool(string poolKey)
     {
         this.poolDictionary.TryGetValue(poolKey, out SubPool subPool);

@@ -27,37 +27,24 @@ public class CannonBulletMove : BaseLoadComponent
         if (this.rb != null) return;
         this.rb = GetComponentInParent<Rigidbody>();
     }
-    /// Cấp vận tốc ban đầu cho đạn
     public virtual void Launch(Vector3 direction, float force)
     {
-        if (this.rb == null) this.LoadRigidbody();
         if (this.rb == null)
         {
-            Debug.LogWarning($"[{this.gameObject.name}] CannonBulletMove: Không tìm thấy Rigidbody trên viên đạn để phóng đi!");
             return;
         }
-
-        // Đảm bảo hướng bay hợp lệ
         if (direction == Vector3.zero)
         {
-            direction = this.transform.forward;
+            direction = this.transform.parent.forward;
         }
-
-        // Đảm bảo lực phóng tối thiểu
         if (force <= 0f)
         {
             force = 45f;
         }
-
-        // Đảm bảo Rigidbody không bị kinematic và đánh thức vật lý
         this.rb.isKinematic = false;
         this.rb.WakeUp();
-
-        // Gán vận tốc bay tức thời cho Rigidbody
         Vector3 launchVelocity = direction.normalized * force;
         this.rb.linearVelocity = launchVelocity;
-
-        // Xoay đầu đạn theo hướng bắn ngay lập tức
         this.SetFacingDirection(direction.normalized);
     }
 
@@ -65,10 +52,6 @@ public class CannonBulletMove : BaseLoadComponent
     {
         this.UpdateFacingDirection();
     }
-
-    /// <summary>
-    /// Xoay đầu đạn chúc theo đường cong quỹ đạo rơi của Rigidbody
-    /// </summary>
     protected virtual void UpdateFacingDirection()
     {
         if (this.rb != null && this.rb.linearVelocity.sqrMagnitude > 0.1f)
@@ -76,18 +59,33 @@ public class CannonBulletMove : BaseLoadComponent
             this.SetFacingDirection(this.rb.linearVelocity.normalized);
         }
     }
-
-    /// <summary>
-    /// Cập nhật hướng quay an toàn cho GameObject viên đạn (tránh lỗi null parent)
-    /// </summary>
     protected virtual void SetFacingDirection(Vector3 forwardDirection)
     {
         if (forwardDirection == Vector3.zero) return;
 
-        Transform targetTransform = this.controller != null ? this.controller.transform : (this.transform.parent != null ? this.transform.parent : this.transform);
+        Transform targetTransform = this.controller.transform;
         if (targetTransform != null)
         {
             targetTransform.forward = forwardDirection;
+        }
+    }
+
+    public virtual void ResetMove()
+    {
+        TrailRenderer trail = GetComponentInChildren<TrailRenderer>();
+        if (trail != null)
+        {
+            trail.Clear();
+        }
+    }
+
+    public virtual void StopMove()
+    {
+        if (this.rb != null)
+        {
+            this.rb.linearVelocity = Vector3.zero;
+            this.rb.angularVelocity = Vector3.zero;
+            this.rb.isKinematic = true;
         }
     }
 }
