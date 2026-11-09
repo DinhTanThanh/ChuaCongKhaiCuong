@@ -25,6 +25,8 @@ namespace ProjectTools.Editor
             GenerateQuadrant("Map_CircleRiver_NW", 0, 1, "Tây Bắc");
             GenerateQuadrant("Map_CircleRiver_NE", 1, 1, "Đông Bắc");
 
+            CircularRiverGroundBeautifier.BeautifyAllCircularRiverMaps(showDialog: false);
+
             EditorUtility.DisplayDialog("Thành công!",
                 "Đã tạo hoàn tất 4 Mảnh Map ghép thành CON SÔNG TỰ NHIÊN UỐN LƯỢN KHÚC KHUỶU KHÉP KÍN!\n\n" +
                 "Đặc điểm mới:\n" +
